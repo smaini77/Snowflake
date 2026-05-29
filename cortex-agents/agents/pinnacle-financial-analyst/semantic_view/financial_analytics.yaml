@@ -1,0 +1,261 @@
+# Semantic View: FINANCIAL_ANALYTICS
+# Schema: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS
+# Purpose: Pinnacle Financial Services - Revenue, Expense, Client, and Product Analytics
+# Data Coverage: July 2025 - January 2026
+
+comment: >
+  Pinnacle Financial Services - Financial Analytics.
+  DATA COVERAGE: July 2025 - January 2026.
+  Revenue and expenses are separate fact tables.
+
+custom_instructions:
+  ai_sql_generation: >
+    When calculating quarterly revenue, use the QUARTER dimension.
+    For budget variance analysis, negative values indicate over budget.
+    Always round financial amounts to 2 decimal places.
+    DATA COVERAGE: July 2025 - January 2026 only.
+    For profitability questions, query revenue and expenses separately
+    and explain they are in different fact tables.
+
+tables:
+  # ===== FACT TABLES =====
+  - name: REVENUE
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.FACT_REVENUE
+    primary_key: [REVENUE_ID]
+    synonyms: [income, fees, earnings]
+    comment: "Revenue transactions from management fees, performance fees, advisory fees"
+    dimensions:
+      - name: REVENUE_TYPE
+        expression: REVENUE_TYPE
+        data_type: VARCHAR(50)
+        synonyms: [fee type, income type]
+        comment: "Type of revenue: Management Fee, Performance Fee, Advisory Fee, Transaction Fee"
+    facts:
+      - name: GROSS_REVENUE_AMOUNT
+        expression: GROSS_REVENUE
+        data_type: NUMBER(18,2)
+      - name: NET_REVENUE_AMOUNT
+        expression: NET_REVENUE
+        data_type: NUMBER(18,2)
+      - name: DISCOUNT_AMOUNT
+        expression: DISCOUNTS
+        data_type: NUMBER(18,2)
+      - name: AUM_VALUE
+        expression: AUM_AT_TRANSACTION
+        data_type: NUMBER(18,2)
+      - name: CLIENT_FK
+        expression: CLIENT_KEY
+        data_type: NUMBER(38,0)
+    metrics:
+      - name: TOTAL_REVENUE
+        expression: SUM(revenue.net_revenue_amount)
+        data_type: NUMBER(30,2)
+        synonyms: [total income, total fees, revenue, net revenue]
+        comment: "Total net revenue across all transactions"
+      - name: TOTAL_GROSS_REVENUE
+        expression: SUM(revenue.gross_revenue_amount)
+        data_type: NUMBER(30,2)
+        synonyms: [gross revenue, gross income]
+        comment: "Total gross revenue before discounts"
+      - name: TOTAL_AUM
+        expression: SUM(revenue.aum_value)
+        data_type: NUMBER(30,2)
+        synonyms: [total assets under management, assets managed, AUM total]
+        comment: "Total AUM across all transactions"
+      - name: REVENUE_PER_CLIENT
+        expression: "SUM(revenue.net_revenue_amount) / NULLIF(COUNT(DISTINCT revenue.client_fk), 0)"
+        data_type: NUMBER(36,8)
+        synonyms: [client revenue, average client value, client profitability]
+        comment: "Average revenue per client"
+      - name: CLIENT_COUNT
+        expression: COUNT(DISTINCT revenue.client_fk)
+        data_type: NUMBER(18,0)
+        synonyms: [number of clients, customer count]
+        comment: "Count of unique clients with revenue"
+      - name: TRANSACTION_COUNT
+        expression: COUNT(REVENUE_ID)
+        data_type: NUMBER(18,0)
+        synonyms: [number of transactions, revenue count]
+        comment: "Number of revenue transactions"
+      - name: AVERAGE_REVENUE
+        expression: AVG(revenue.net_revenue_amount)
+        data_type: NUMBER(36,8)
+        synonyms: [average income, avg revenue]
+        comment: "Average revenue per transaction"
+      - name: DISCOUNT_RATE
+        expression: "SUM(revenue.discount_amount) / NULLIF(SUM(revenue.gross_revenue_amount), 0) * 100"
+        data_type: NUMBER(38,8)
+        synonyms: [discount percentage, fee discount rate]
+        comment: "Average discount rate as percentage of gross revenue"
+    relationships:
+      - name: REVENUE_TO_CLIENTS
+        ref_table: CLIENTS
+        foreign_key: [CLIENT_KEY]
+        ref_key: [CLIENT_KEY]
+      - name: REVENUE_TO_DATES
+        ref_table: DATES
+        foreign_key: [DATE_KEY]
+        ref_key: [DATE_KEY]
+      - name: REVENUE_TO_PRODUCTS
+        ref_table: PRODUCTS
+        foreign_key: [PRODUCT_KEY]
+        ref_key: [PRODUCT_KEY]
+
+  - name: EXPENSES
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.FACT_EXPENSES
+    primary_key: [EXPENSE_ID]
+    synonyms: [costs, spending, expenditures]
+    comment: "Expense transactions with actual vs budget amounts"
+    facts:
+      - name: ACTUAL_EXPENSE
+        expression: ACTUAL_AMOUNT
+        data_type: NUMBER(18,2)
+      - name: BUDGETED_EXPENSE
+        expression: BUDGET_AMOUNT
+        data_type: NUMBER(18,2)
+      - name: VARIANCE_DOLLARS
+        expression: VARIANCE_AMOUNT
+        data_type: NUMBER(18,2)
+    metrics:
+      - name: TOTAL_EXPENSES
+        expression: SUM(expenses.actual_expense)
+        data_type: NUMBER(30,2)
+        synonyms: [total costs, total spending, actual expenses]
+        comment: "Total actual expenses"
+      - name: TOTAL_BUDGET
+        expression: SUM(expenses.budgeted_expense)
+        data_type: NUMBER(30,2)
+        synonyms: [budgeted amount, planned expenses]
+        comment: "Total budgeted expenses"
+      - name: BUDGET_VARIANCE
+        expression: SUM(expenses.variance_dollars)
+        data_type: NUMBER(30,2)
+        synonyms: [variance, budget vs actual, over under budget]
+        comment: "Total budget variance (positive = under budget, negative = over budget)"
+      - name: EXPENSE_COUNT
+        expression: COUNT(EXPENSE_ID)
+        data_type: NUMBER(18,0)
+        synonyms: [number of expenses, expense transactions]
+        comment: "Number of expense transactions"
+    relationships:
+      - name: EXPENSES_TO_CATEGORIES
+        ref_table: EXPENSE_CATEGORIES
+        foreign_key: [EXPENSE_CATEGORY_KEY]
+        ref_key: [EXPENSE_CATEGORY_KEY]
+      - name: EXPENSES_TO_COST_CENTERS
+        ref_table: COST_CENTERS
+        foreign_key: [COST_CENTER_KEY]
+        ref_key: [COST_CENTER_KEY]
+      - name: EXPENSES_TO_DATES
+        ref_table: DATES
+        foreign_key: [DATE_KEY]
+        ref_key: [DATE_KEY]
+
+  # ===== DIMENSION TABLES =====
+  - name: CLIENTS
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_CLIENT
+    primary_key: [CLIENT_KEY]
+    synonyms: [customers, accounts, investors]
+    comment: "Client accounts across Individual, Institutional, and Family Office segments"
+    dimensions:
+      - name: CLIENT_NAME
+        expression: CLIENT_NAME
+        data_type: VARCHAR(200)
+        synonyms: [customer name, account name, investor name]
+        comment: "Full name of the client"
+      - name: CLIENT_SEGMENT
+        expression: CLIENT_SEGMENT
+        data_type: VARCHAR(50)
+        synonyms: [segment, client type, customer type]
+        comment: "Client segment: Individual, Institutional, or Family Office"
+      - name: CLIENT_TIER
+        expression: CLIENT_TIER
+        data_type: VARCHAR(20)
+        synonyms: [tier, service level]
+        comment: "Client tier: Platinum, Gold, Silver, Bronze"
+      - name: CLIENT_LOCATION
+        expression: OFFICE_LOCATION
+        data_type: VARCHAR(50)
+        synonyms: [location, office, region]
+        comment: "Office location: New York, Boston, San Francisco"
+
+  - name: PRODUCTS
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_PRODUCT
+    primary_key: [PRODUCT_KEY]
+    synonyms: [investment products, funds, strategies]
+    comment: "Investment products including Equity, Fixed Income, Alternative, and Multi-Asset"
+    dimensions:
+      - name: PRODUCT_NAME
+        expression: PRODUCT_NAME
+        data_type: VARCHAR(100)
+        synonyms: [fund name, investment name, strategy name]
+        comment: "Name of the investment product"
+      - name: PRODUCT_CATEGORY
+        expression: PRODUCT_CATEGORY
+        data_type: VARCHAR(50)
+        synonyms: [asset class, product type]
+        comment: "Product category: Equity, Fixed Income, Alternative, Multi-Asset"
+
+  - name: DATES
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_DATE
+    primary_key: [DATE_KEY]
+    synonyms: [calendar, time periods]
+    comment: "Date dimension for time-based analysis"
+    dimensions:
+      - name: FULL_DATE
+        expression: FULL_DATE
+        data_type: DATE
+        synonyms: [date, transaction date]
+        comment: "Full calendar date"
+      - name: MONTH_NAME
+        expression: MONTH_NAME
+        data_type: VARCHAR(20)
+        synonyms: [month]
+        comment: "Month name (January, February, etc.)"
+      - name: MONTH
+        expression: MONTH
+        data_type: NUMBER(38,0)
+        comment: "Calendar month (1-12)"
+      - name: QUARTER
+        expression: QUARTER
+        data_type: NUMBER(38,0)
+        synonyms: [Q1, Q2, Q3, Q4]
+        comment: "Calendar quarter (1-4)"
+      - name: YEAR
+        expression: YEAR
+        data_type: NUMBER(38,0)
+        synonyms: [calendar year, fiscal year]
+        comment: "Calendar year (2025, 2026)"
+
+  - name: EXPENSE_CATEGORIES
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_EXPENSE_CATEGORY
+    primary_key: [EXPENSE_CATEGORY_KEY]
+    synonyms: [cost categories, expense types]
+    comment: "Expense classification for Compensation, Technology, Professional Services, Occupancy, Marketing"
+    dimensions:
+      - name: EXPENSE_CATEGORY
+        expression: CATEGORY_NAME
+        data_type: VARCHAR(100)
+        synonyms: [expense type, cost type]
+        comment: "Name of the expense category"
+      - name: EXPENSE_GROUP
+        expression: CATEGORY_GROUP
+        data_type: VARCHAR(50)
+        synonyms: [expense group, cost group]
+        comment: "Expense group: Compensation, Technology, Professional Services, Occupancy, Marketing"
+
+  - name: COST_CENTERS
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_COST_CENTER
+    primary_key: [COST_CENTER_KEY]
+    synonyms: [departments, business units]
+    comment: "Organizational cost centers by department and location"
+    dimensions:
+      - name: COST_CENTER
+        expression: COST_CENTER_NAME
+        data_type: VARCHAR(100)
+        synonyms: [department, business unit]
+        comment: "Name of the cost center"
+      - name: DEPARTMENT
+        expression: DEPARTMENT
+        data_type: VARCHAR(50)
+        comment: "Department name"

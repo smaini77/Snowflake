@@ -1,0 +1,27 @@
+[
+  {
+    "question": "What is the total revenue for Cascade Wealth Management?",
+    "expected_behavior": "Agent queries SUM of net_revenue_amount from FACT_REVENUE",
+    "expected_output_contains": ["revenue", "$"]
+  },
+  {
+    "question": "Which clients are the most profitable?",
+    "expected_behavior": "Agent queries revenue and costs per client, calculates profit",
+    "expected_output_contains": ["client", "profit"]
+  },
+  {
+    "question": "What is our total AUM?",
+    "expected_behavior": "Agent queries SUM of AUM values",
+    "expected_output_contains": ["AUM", "$"]
+  },
+  {
+    "question": "Break down costs by type",
+    "expected_behavior": "Agent groups costs by cost_type dimension",
+    "expected_output_contains": ["cost", "direct", "allocated"]
+  },
+  {
+    "question": "Show revenue by product category",
+    "expected_behavior": "Agent joins revenue with products, groups by category",
+    "expected_output_contains": ["product", "category", "revenue"]
+  }
+]

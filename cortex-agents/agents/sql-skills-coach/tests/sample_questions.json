@@ -1,0 +1,27 @@
+[
+  {
+    "question": "Start the SQL assessment",
+    "expected_behavior": "Agent generates a random SQL question using the schema context (orders, order_items, products)",
+    "expected_output_contains": ["Round", "Difficulty"]
+  },
+  {
+    "question": "SELECT product_name, SUM(quantity * unit_price) AS total_revenue FROM order_items JOIN products ON order_items.product_id = products.product_id GROUP BY product_name ORDER BY total_revenue DESC",
+    "expected_behavior": "Agent evaluates the SQL against its internal reference, provides rubric scoring and coaching",
+    "expected_output_contains": ["rubric", "feedback"]
+  },
+  {
+    "question": "next",
+    "expected_behavior": "Agent generates the next question at potentially different difficulty",
+    "expected_output_contains": ["Round", "Difficulty"]
+  },
+  {
+    "question": "hint",
+    "expected_behavior": "Agent provides a hint without revealing the full solution",
+    "expected_output_contains": ["hint", "try"]
+  },
+  {
+    "question": "show solution",
+    "expected_behavior": "Agent reveals the reference SQL solution with explanation",
+    "expected_output_contains": ["SELECT", "FROM"]
+  }
+]

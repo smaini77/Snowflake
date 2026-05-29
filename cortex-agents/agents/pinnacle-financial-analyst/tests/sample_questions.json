@@ -1,0 +1,32 @@
+[
+  {
+    "question": "What was our total revenue last quarter?",
+    "expected_behavior": "Agent uses FinancialAnalyst tool to query revenue by quarter",
+    "expected_output_contains": ["revenue", "$", "quarter"]
+  },
+  {
+    "question": "Which clients generated the most revenue?",
+    "expected_behavior": "Agent queries revenue grouped by client, ordered descending",
+    "expected_output_contains": ["client", "revenue"]
+  },
+  {
+    "question": "What expense categories are over budget?",
+    "expected_behavior": "Agent queries expenses where actual > budget, shows variance",
+    "expected_output_contains": ["budget", "variance", "over"]
+  },
+  {
+    "question": "Show me revenue by product type",
+    "expected_behavior": "Agent breaks down revenue by product category",
+    "expected_output_contains": ["Equity", "Fixed Income"]
+  },
+  {
+    "question": "What is our revenue trend by month?",
+    "expected_behavior": "Agent queries monthly revenue progression",
+    "expected_output_contains": ["month", "revenue"]
+  },
+  {
+    "question": "How does revenue break down by client segment?",
+    "expected_behavior": "Agent groups revenue by Individual, Institutional, Family Office",
+    "expected_output_contains": ["segment", "Individual", "Institutional"]
+  }
+]

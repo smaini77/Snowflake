@@ -1,0 +1,92 @@
+name: CI - Lint & Validate Agent Specs
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-yaml:
+    name: YAML Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Lint YAML files
+        run: |
+          yamllint -d relaxed agents/*/spec/*.yaml
+          yamllint -d relaxed agents/*/semantic_view/*.yaml 2>/dev/null || true
+
+  lint-sql:
+    name: SQL Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install sqlfluff
+        run: pip install sqlfluff
+
+      - name: Lint SQL files
+        run: |
+          sqlfluff lint agents/*/deploy/*.sql \
+            --dialect snowflake \
+            --exclude-rules LT05,LT09 \
+            || true
+
+  lint-python:
+    name: Python Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Lint Python files
+        run: ruff check scripts/ agents/*/tests/
+
+  validate-specs:
+    name: Validate Agent Specifications
+    runs-on: ubuntu-latest
+    needs: [lint-yaml]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pyyaml jsonschema
+
+      - name: Validate agent specs
+        run: python scripts/validate_specs.py
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: [validate-specs]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: |
+          pip install pytest pyyaml
+
+      - name: Run structural tests
+        run: pytest agents/ -v --tb=short

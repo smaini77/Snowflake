@@ -1,0 +1,183 @@
+# Semantic View: FINANCIAL_ANALYTICS
+# Schema: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO
+# Purpose: Cascade Wealth Management - Client Profitability Analytics
+# Data Coverage: Feb 2025 - Feb 2026
+
+comment: >
+  Cascade Wealth Management - Client Profitability Analytics.
+  Data: Feb 2025 - Feb 2026. $500M AUM RIA.
+  Query revenue and costs separately, then calculate profitability as Revenue - Costs.
+
+custom_instructions:
+  ai_sql_generation: >
+    Financial analyst for Cascade Wealth Management, a $500M AUM RIA focused on
+    retirement planning. Data: Feb 2025-Feb 2026. For client profitability: query
+    TOTAL_REVENUE and TOTAL_COSTS separately by client, then calculate
+    profit = revenue - costs. Format currency with $ and commas, percentages to 2 decimals.
+
+tables:
+  # ===== FACT TABLES =====
+  - name: REVENUE
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.FACT_REVENUE
+    primary_key: [REVENUE_ID]
+    relationships:
+      - name: REV_TO_CLIENTS
+        ref_table: CLIENTS
+        foreign_key: [CLIENT_FK]
+        ref_key: [CLIENT_KEY]
+      - name: REV_TO_DATES
+        ref_table: DATES
+        foreign_key: [DATE_FK]
+        ref_key: [DATE_KEY]
+      - name: REV_TO_PRODUCTS
+        ref_table: PRODUCTS
+        foreign_key: [PRODUCT_FK]
+        ref_key: [PRODUCT_KEY]
+    facts:
+      - name: GROSS_REVENUE_AMOUNT
+        expression: GROSS_REVENUE_AMOUNT
+        data_type: NUMBER(18,2)
+      - name: NET_REVENUE_AMOUNT
+        expression: NET_REVENUE_AMOUNT
+        data_type: NUMBER(18,2)
+      - name: DISCOUNT_AMOUNT
+        expression: DISCOUNT_AMOUNT
+        data_type: NUMBER(18,2)
+      - name: AUM_VALUE
+        expression: AUM_VALUE
+        data_type: NUMBER(18,2)
+    metrics:
+      - name: TOTAL_REVENUE
+        expression: SUM(revenue.net_revenue_amount)
+        data_type: NUMBER(30,2)
+        synonyms: [total fees, total income]
+      - name: TOTAL_AUM
+        expression: SUM(revenue.aum_value)
+        data_type: NUMBER(30,2)
+        synonyms: [assets under management, total assets]
+      - name: AVG_AUM
+        expression: AVG(revenue.aum_value)
+        data_type: NUMBER(36,8)
+        synonyms: [average AUM]
+      - name: CLIENT_COUNT
+        expression: COUNT(DISTINCT revenue.client_fk)
+        data_type: NUMBER(18,0)
+        synonyms: [number of clients]
+      - name: REVENUE_PER_CLIENT
+        expression: "SUM(revenue.net_revenue_amount) / NULLIF(COUNT(DISTINCT revenue.client_fk), 0)"
+        data_type: NUMBER(36,8)
+        synonyms: [average revenue per client]
+
+  - name: COSTS
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.FACT_CLIENT_COSTS
+    primary_key: [COST_ID]
+    relationships:
+      - name: COSTS_TO_CC
+        ref_table: COST_CENTERS
+        foreign_key: [COST_CENTER_FK]
+        ref_key: [COST_CENTER_KEY]
+      - name: COSTS_TO_CLIENTS
+        ref_table: CLIENTS
+        foreign_key: [CLIENT_FK]
+        ref_key: [CLIENT_KEY]
+      - name: COSTS_TO_DATES
+        ref_table: DATES
+        foreign_key: [DATE_FK]
+        ref_key: [DATE_KEY]
+    dimensions:
+      - name: COST_TYPE
+        expression: COST_TYPE
+        data_type: VARCHAR(50)
+    facts:
+      - name: DIRECT_COST_AMOUNT
+        expression: DIRECT_COST_AMOUNT
+        data_type: NUMBER(18,2)
+      - name: ALLOCATED_COST_AMOUNT
+        expression: ALLOCATED_COST_AMOUNT
+        data_type: NUMBER(18,2)
+      - name: TOTAL_COST_AMOUNT
+        expression: TOTAL_COST_AMOUNT
+        data_type: NUMBER(18,2)
+    metrics:
+      - name: TOTAL_COSTS
+        expression: SUM(costs.total_cost_amount)
+        data_type: NUMBER(30,2)
+        synonyms: [total expenses, cost to serve]
+      - name: DIRECT_COSTS
+        expression: SUM(costs.direct_cost_amount)
+        data_type: NUMBER(30,2)
+        synonyms: [direct expenses]
+      - name: ALLOCATED_COSTS
+        expression: SUM(costs.allocated_cost_amount)
+        data_type: NUMBER(30,2)
+        synonyms: [overhead costs]
+      - name: COST_PER_CLIENT
+        expression: "SUM(costs.total_cost_amount) / NULLIF(COUNT(DISTINCT costs.client_fk), 0)"
+        data_type: NUMBER(36,8)
+        synonyms: [average cost per client]
+
+  # ===== DIMENSION TABLES =====
+  - name: CLIENTS
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.DIM_CLIENT
+    primary_key: [CLIENT_KEY]
+    dimensions:
+      - name: CLIENT_NAME
+        expression: CLIENT_NAME
+        data_type: VARCHAR(100)
+      - name: CLIENT_SEGMENT
+        expression: CLIENT_SEGMENT
+        data_type: VARCHAR(50)
+      - name: CLIENT_TYPE
+        expression: CLIENT_TYPE
+        data_type: VARCHAR(50)
+      - name: REGION
+        expression: REGION
+        data_type: VARCHAR(50)
+      - name: RELATIONSHIP_MANAGER
+        expression: RELATIONSHIP_MANAGER
+        data_type: VARCHAR(100)
+      - name: RETIREMENT_FOCUS
+        expression: RETIREMENT_FOCUS
+        data_type: VARCHAR(50)
+
+  - name: PRODUCTS
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.DIM_PRODUCT
+    primary_key: [PRODUCT_KEY]
+    dimensions:
+      - name: PRODUCT_NAME
+        expression: PRODUCT_NAME
+        data_type: VARCHAR(100)
+      - name: PRODUCT_CATEGORY
+        expression: PRODUCT_CATEGORY
+        data_type: VARCHAR(50)
+      - name: FEE_TYPE
+        expression: FEE_TYPE
+        data_type: VARCHAR(30)
+
+  - name: DATES
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.DIM_DATE
+    primary_key: [DATE_KEY]
+    dimensions:
+      - name: FULL_DATE
+        expression: FULL_DATE
+        data_type: DATE
+      - name: MONTH_NAME
+        expression: MONTH_NAME
+        data_type: VARCHAR(20)
+      - name: QUARTER
+        expression: QUARTER
+        data_type: NUMBER(38,0)
+      - name: YEAR
+        expression: YEAR
+        data_type: NUMBER(38,0)
+
+  - name: COST_CENTERS
+    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.DIM_COST_CENTER
+    primary_key: [COST_CENTER_KEY]
+    dimensions:
+      - name: COST_CENTER_NAME
+        expression: COST_CENTER_NAME
+        data_type: VARCHAR(100)
+      - name: DEPARTMENT
+        expression: DEPARTMENT
+        data_type: VARCHAR(50)

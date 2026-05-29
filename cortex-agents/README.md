@@ -1,6 +1,6 @@
 # Cortex Agents - Snowflake AI Agent Repository
 
-Production-ready repository for Snowflake Cortex AI Agents developed by Sandeep Maini.
+Production-ready repository for Snowflake Cortex AI Agents.
 
 ## Solution Architecture
 

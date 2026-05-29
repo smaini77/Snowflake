@@ -116,5 +116,4 @@ cortex agents describe <YOUR_DATABASE>.ANALYTICS.PINNACLE_FINANCIAL_ANALYST
 3. Submit a pull request with description of changes
 
 ## License
-
-Internal use only - Cognizant / Snowflake
+Open

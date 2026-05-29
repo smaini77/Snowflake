@@ -1,10 +1,10 @@
 -- ==============================================================================
 -- Pinnacle Financial Analyst - Agent DDL
--- Database: SANDEEP_MAINI_COGNIZANT_COM_DB
+-- Database: ${SNOWFLAKE_DATABASE} (substituted at deploy time)
 -- Schema:   ANALYTICS
 -- ==============================================================================
 
-USE DATABASE SANDEEP_MAINI_COGNIZANT_COM_DB;
+USE DATABASE ${SNOWFLAKE_DATABASE};
 USE SCHEMA ANALYTICS;
 
 CREATE OR REPLACE AGENT PINNACLE_FINANCIAL_ANALYST
@@ -73,5 +73,5 @@ CREATE OR REPLACE AGENT PINNACLE_FINANCIAL_ANALYST
 
   tool_resources:
     FinancialAnalyst:
-      semantic_view: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.FINANCIAL_ANALYTICS
+      semantic_view: ${SNOWFLAKE_DATABASE}.ANALYTICS.FINANCIAL_ANALYTICS
   $$;

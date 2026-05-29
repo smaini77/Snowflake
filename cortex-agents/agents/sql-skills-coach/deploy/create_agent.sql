@@ -1,10 +1,10 @@
 -- ==============================================================================
 -- SQL Skills Coach - Agent DDL
--- Database: SANDEEP_MAINI_COGNIZANT_COM_DB
+-- Database: ${SNOWFLAKE_DATABASE} (substituted at deploy time)
 -- Schema:   SQL_ASSESSMENT
 -- ==============================================================================
 
-USE DATABASE SANDEEP_MAINI_COGNIZANT_COM_DB;
+USE DATABASE ${SNOWFLAKE_DATABASE};
 USE SCHEMA SQL_ASSESSMENT;
 
 CREATE OR REPLACE AGENT SQL_SKILLS_COACH

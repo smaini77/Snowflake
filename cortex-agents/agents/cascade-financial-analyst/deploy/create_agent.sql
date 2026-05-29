@@ -1,10 +1,10 @@
 -- ==============================================================================
 -- Cascade Financial Analyst - Agent DDL
--- Database: SANDEEP_MAINI_COGNIZANT_COM_DB
+-- Database: ${SNOWFLAKE_DATABASE} (substituted at deploy time)
 -- Schema:   CASCADE_DEMO
 -- ==============================================================================
 
-USE DATABASE SANDEEP_MAINI_COGNIZANT_COM_DB;
+USE DATABASE ${SNOWFLAKE_DATABASE};
 USE SCHEMA CASCADE_DEMO;
 
 CREATE OR REPLACE AGENT CASCADE_FINANCIAL_ANALYST
@@ -50,5 +50,5 @@ CREATE OR REPLACE AGENT CASCADE_FINANCIAL_ANALYST
 
   tool_resources:
     Analyst:
-      semantic_view: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.FINANCIAL_ANALYTICS
+      semantic_view: ${SNOWFLAKE_DATABASE}.CASCADE_DEMO.FINANCIAL_ANALYTICS
   $$;

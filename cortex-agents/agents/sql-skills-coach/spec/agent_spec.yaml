@@ -1,8 +1,8 @@
 # SQL Skills Coach Agent Specification
 # Agent: SQL_SKILLS_COACH
-# Database: SANDEEP_MAINI_COGNIZANT_COM_DB
+# Database: <YOUR_DATABASE>
 # Schema: SQL_ASSESSMENT
-# Owner: SANDEEP_MAINI_COGNIZANT_COM_ROLE
+# Owner: <YOUR_ROLE>
 # Note: This is a TOOL-LESS agent - purely prompt-driven conversation
 
 models:

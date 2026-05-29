@@ -7,7 +7,7 @@ Interactive SQL skills assessment and coaching agent (conversational, tool-less)
 | Property | Value |
 |----------|-------|
 | **Agent** | `SQL_SKILLS_COACH` |
-| **Database** | `SANDEEP_MAINI_COGNIZANT_COM_DB` |
+| **Database** | `<YOUR_DATABASE>` |
 | **Schema** | `SQL_ASSESSMENT` |
 | **Model** | `auto` |
 | **Tools** | None (prompt-driven) |
@@ -35,7 +35,7 @@ products(product_id INT PK, product_name VARCHAR(100), category VARCHAR(50))
 ### Prerequisites
 
 - Snowflake account with Cortex AI enabled
-- Role: `SANDEEP_MAINI_COGNIZANT_COM_ROLE`
+- Role: `<YOUR_ROLE>`
 - No data tables required (agent is purely conversational)
 
 ### Environment Setup
@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 ```bash
 # Describe the agent
-cortex agents describe SANDEEP_MAINI_COGNIZANT_COM_DB.SQL_ASSESSMENT.SQL_SKILLS_COACH
+cortex agents describe <YOUR_DATABASE>.SQL_ASSESSMENT.SQL_SKILLS_COACH
 ```
 
 ### Interaction Flow

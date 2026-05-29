@@ -24,7 +24,7 @@
 | Object | Convention | Example |
 |--------|------------|---------|
 | Agent | UPPER_SNAKE_CASE | `PINNACLE_FINANCIAL_ANALYST` |
-| Database | UPPER_SNAKE_CASE | `SANDEEP_MAINI_COGNIZANT_COM_DB` |
+| Database | UPPER_SNAKE_CASE | `<YOUR_DATABASE>` |
 | Schema | UPPER_SNAKE_CASE | `ANALYTICS` |
 | Semantic View | UPPER_SNAKE_CASE | `FINANCIAL_ANALYTICS` |
 | Tables | UPPER_SNAKE_CASE with prefix | `FACT_REVENUE`, `DIM_CLIENT` |

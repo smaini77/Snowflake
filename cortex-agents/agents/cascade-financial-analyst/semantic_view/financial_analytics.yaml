@@ -1,5 +1,5 @@
 # Semantic View: FINANCIAL_ANALYTICS
-# Schema: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO
+# Schema: ${SNOWFLAKE_DATABASE}.CASCADE_DEMO
 # Purpose: Cascade Wealth Management - Client Profitability Analytics
 # Data Coverage: Feb 2025 - Feb 2026
 
@@ -18,7 +18,7 @@ custom_instructions:
 tables:
   # ===== FACT TABLES =====
   - name: REVENUE
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.FACT_REVENUE
+    base_table: ${SNOWFLAKE_DATABASE}.CASCADE_DEMO.FACT_REVENUE
     primary_key: [REVENUE_ID]
     relationships:
       - name: REV_TO_CLIENTS
@@ -69,7 +69,7 @@ tables:
         synonyms: [average revenue per client]
 
   - name: COSTS
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.FACT_CLIENT_COSTS
+    base_table: ${SNOWFLAKE_DATABASE}.CASCADE_DEMO.FACT_CLIENT_COSTS
     primary_key: [COST_ID]
     relationships:
       - name: COSTS_TO_CC
@@ -118,7 +118,7 @@ tables:
 
   # ===== DIMENSION TABLES =====
   - name: CLIENTS
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.DIM_CLIENT
+    base_table: ${SNOWFLAKE_DATABASE}.CASCADE_DEMO.DIM_CLIENT
     primary_key: [CLIENT_KEY]
     dimensions:
       - name: CLIENT_NAME
@@ -141,7 +141,7 @@ tables:
         data_type: VARCHAR(50)
 
   - name: PRODUCTS
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.DIM_PRODUCT
+    base_table: ${SNOWFLAKE_DATABASE}.CASCADE_DEMO.DIM_PRODUCT
     primary_key: [PRODUCT_KEY]
     dimensions:
       - name: PRODUCT_NAME
@@ -155,7 +155,7 @@ tables:
         data_type: VARCHAR(30)
 
   - name: DATES
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.DIM_DATE
+    base_table: ${SNOWFLAKE_DATABASE}.CASCADE_DEMO.DIM_DATE
     primary_key: [DATE_KEY]
     dimensions:
       - name: FULL_DATE
@@ -172,7 +172,7 @@ tables:
         data_type: NUMBER(38,0)
 
   - name: COST_CENTERS
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.DIM_COST_CENTER
+    base_table: ${SNOWFLAKE_DATABASE}.CASCADE_DEMO.DIM_COST_CENTER
     primary_key: [COST_CENTER_KEY]
     dimensions:
       - name: COST_CENTER_NAME

@@ -22,15 +22,30 @@ if (Test-Path $EnvFile) {
     }
 }
 
+# Validate required environment variable
+if (-not $env:SNOWFLAKE_DATABASE) {
+    Write-Host "  [ERROR] SNOWFLAKE_DATABASE is not set. Configure it in .env or environment." -ForegroundColor Red
+    exit 1
+}
+
 Write-Host "Deploying Cascade Financial Analyst..." -ForegroundColor Green
 Write-Host "  SQL File: $DeploySQL" -ForegroundColor DarkGray
+Write-Host "  Database: $env:SNOWFLAKE_DATABASE" -ForegroundColor DarkGray
 Write-Host "  Environment: $Environment" -ForegroundColor DarkGray
+
+# Substitute ${SNOWFLAKE_DATABASE} placeholder in SQL template
+$SqlContent = Get-Content $DeploySQL -Raw
+$SqlContent = $SqlContent -replace '\$\{SNOWFLAKE_DATABASE\}', $env:SNOWFLAKE_DATABASE
+$TempSQL = Join-Path $env:TEMP "deploy_cascade_agent.sql"
+Set-Content $TempSQL -Value $SqlContent -NoNewline
 
 # Execute via Snowflake CLI
 try {
-    snow sql -f $DeploySQL --connection $env:SNOWFLAKE_CONNECTION
+    snow sql -f $TempSQL --connection $env:SNOWFLAKE_CONNECTION
     Write-Host "  Agent deployed successfully!" -ForegroundColor Green
 } catch {
     Write-Host "  Deployment failed: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
+} finally {
+    Remove-Item $TempSQL -ErrorAction SilentlyContinue
 }

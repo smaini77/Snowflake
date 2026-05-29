@@ -93,7 +93,7 @@ cp agents/pinnacle-financial-analyst/.env.template agents/pinnacle-financial-ana
 
 ```bash
 # Via Cortex Code CLI
-cortex agents describe SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.PINNACLE_FINANCIAL_ANALYST
+cortex agents describe <YOUR_DATABASE>.ANALYTICS.PINNACLE_FINANCIAL_ANALYST
 ```
 
 ## Environment Variables
@@ -104,7 +104,10 @@ cortex agents describe SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.PINNACLE_FINANCI
 | `SNOWFLAKE_USER` | Snowflake username |
 | `SNOWFLAKE_ROLE` | Role with agent privileges |
 | `SNOWFLAKE_WAREHOUSE` | Compute warehouse |
-| `SNOWFLAKE_DATABASE` | Target database |
+| `SNOWFLAKE_DATABASE` | Target database (used for `${SNOWFLAKE_DATABASE}` substitution in SQL templates) |
+| `SNOWFLAKE_CONNECTION` | Snowflake CLI connection name |
+
+**Note:** All SQL deploy templates use `${SNOWFLAKE_DATABASE}` as a placeholder. The deploy scripts automatically substitute this with the value from your `.env` file at deploy time. This makes the codebase fully reusable across different accounts and databases.
 
 ## Contributing
 

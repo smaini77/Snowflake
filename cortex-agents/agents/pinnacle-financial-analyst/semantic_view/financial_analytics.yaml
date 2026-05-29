@@ -1,5 +1,5 @@
 # Semantic View: FINANCIAL_ANALYTICS
-# Schema: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS
+# Schema: ${SNOWFLAKE_DATABASE}.ANALYTICS
 # Purpose: Pinnacle Financial Services - Revenue, Expense, Client, and Product Analytics
 # Data Coverage: July 2025 - January 2026
 
@@ -20,7 +20,7 @@ custom_instructions:
 tables:
   # ===== FACT TABLES =====
   - name: REVENUE
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.FACT_REVENUE
+    base_table: ${SNOWFLAKE_DATABASE}.ANALYTICS.FACT_REVENUE
     primary_key: [REVENUE_ID]
     synonyms: [income, fees, earnings]
     comment: "Revenue transactions from management fees, performance fees, advisory fees"
@@ -102,7 +102,7 @@ tables:
         ref_key: [PRODUCT_KEY]
 
   - name: EXPENSES
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.FACT_EXPENSES
+    base_table: ${SNOWFLAKE_DATABASE}.ANALYTICS.FACT_EXPENSES
     primary_key: [EXPENSE_ID]
     synonyms: [costs, spending, expenditures]
     comment: "Expense transactions with actual vs budget amounts"
@@ -153,7 +153,7 @@ tables:
 
   # ===== DIMENSION TABLES =====
   - name: CLIENTS
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_CLIENT
+    base_table: ${SNOWFLAKE_DATABASE}.ANALYTICS.DIM_CLIENT
     primary_key: [CLIENT_KEY]
     synonyms: [customers, accounts, investors]
     comment: "Client accounts across Individual, Institutional, and Family Office segments"
@@ -180,7 +180,7 @@ tables:
         comment: "Office location: New York, Boston, San Francisco"
 
   - name: PRODUCTS
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_PRODUCT
+    base_table: ${SNOWFLAKE_DATABASE}.ANALYTICS.DIM_PRODUCT
     primary_key: [PRODUCT_KEY]
     synonyms: [investment products, funds, strategies]
     comment: "Investment products including Equity, Fixed Income, Alternative, and Multi-Asset"
@@ -197,7 +197,7 @@ tables:
         comment: "Product category: Equity, Fixed Income, Alternative, Multi-Asset"
 
   - name: DATES
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_DATE
+    base_table: ${SNOWFLAKE_DATABASE}.ANALYTICS.DIM_DATE
     primary_key: [DATE_KEY]
     synonyms: [calendar, time periods]
     comment: "Date dimension for time-based analysis"
@@ -228,7 +228,7 @@ tables:
         comment: "Calendar year (2025, 2026)"
 
   - name: EXPENSE_CATEGORIES
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_EXPENSE_CATEGORY
+    base_table: ${SNOWFLAKE_DATABASE}.ANALYTICS.DIM_EXPENSE_CATEGORY
     primary_key: [EXPENSE_CATEGORY_KEY]
     synonyms: [cost categories, expense types]
     comment: "Expense classification for Compensation, Technology, Professional Services, Occupancy, Marketing"
@@ -245,7 +245,7 @@ tables:
         comment: "Expense group: Compensation, Technology, Professional Services, Occupancy, Marketing"
 
   - name: COST_CENTERS
-    base_table: SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.DIM_COST_CENTER
+    base_table: ${SNOWFLAKE_DATABASE}.ANALYTICS.DIM_COST_CENTER
     primary_key: [COST_CENTER_KEY]
     synonyms: [departments, business units]
     comment: "Organizational cost centers by department and location"

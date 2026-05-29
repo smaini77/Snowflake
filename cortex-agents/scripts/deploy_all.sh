@@ -2,6 +2,7 @@
 # ==============================================================================
 # Deploy All Cortex Agents
 # Usage: ./scripts/deploy_all.sh [--env prod|dev] [--dry-run]
+# Requires: SNOWFLAKE_DATABASE and SNOWFLAKE_CONNECTION environment variables
 # ==============================================================================
 
 set -euo pipefail
@@ -20,10 +21,17 @@ done
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 AGENTS=("pinnacle-financial-analyst" "cascade-financial-analyst" "sql-skills-coach")
 
+# Validate required environment variable
+if [[ -z "${SNOWFLAKE_DATABASE:-}" ]]; then
+    echo "[ERROR] SNOWFLAKE_DATABASE is not set. Export it or define in .env"
+    exit 1
+fi
+
 echo "============================================"
 echo " Cortex Agents - Deployment Script"
 echo " Environment: $ENVIRONMENT"
-echo " Dry Run: $DRY_RUN"
+echo " Database:    $SNOWFLAKE_DATABASE"
+echo " Dry Run:     $DRY_RUN"
 echo "============================================"
 echo ""
 
@@ -40,11 +48,15 @@ for agent in "${AGENTS[@]}"; do
 
     echo "[DEPLOYING] $agent..."
 
+    # Substitute ${SNOWFLAKE_DATABASE} placeholder
+    TEMP_SQL=$(mktemp)
+    sed "s/\${SNOWFLAKE_DATABASE}/${SNOWFLAKE_DATABASE}/g" "$DEPLOY_SQL" > "$TEMP_SQL"
+
     if [[ "$DRY_RUN" == "true" ]]; then
-        echo "  [DRY RUN] Would execute: $DEPLOY_SQL"
+        echo "  [DRY RUN] Would execute: $DEPLOY_SQL (with DB=$SNOWFLAKE_DATABASE)"
         ((SUCCESS_COUNT++))
     else
-        if snow sql -f "$DEPLOY_SQL" 2>/dev/null; then
+        if snow sql -f "$TEMP_SQL" 2>/dev/null; then
             ((SUCCESS_COUNT++))
             echo "  [SUCCESS] $agent deployed"
         else
@@ -53,6 +65,7 @@ for agent in "${AGENTS[@]}"; do
         fi
     fi
 
+    rm -f "$TEMP_SQL"
     echo ""
 done
 

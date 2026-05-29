@@ -95,7 +95,7 @@ Semantic views provide a business-friendly abstraction over raw fact/dimension t
 
 ### Data Layer
 
-All data resides in `SANDEEP_MAINI_COGNIZANT_COM_DB` under schema-specific namespaces:
+All data resides in `<YOUR_DATABASE>` under schema-specific namespaces:
 - `ANALYTICS` schema — Pinnacle Financial Services data
 - `CASCADE_DEMO` schema — Cascade Wealth Management data
 
@@ -113,5 +113,5 @@ All data resides in `SANDEEP_MAINI_COGNIZANT_COM_DB` under schema-specific names
 
 - Agent specs do NOT contain credentials
 - Deployment uses Snowflake CLI authentication (key-pair or SSO)
-- Role-based access: agents execute under `SANDEEP_MAINI_COGNIZANT_COM_ROLE`
+- Role-based access: agents execute under `<YOUR_ROLE>`
 - Semantic views enforce column-level access control

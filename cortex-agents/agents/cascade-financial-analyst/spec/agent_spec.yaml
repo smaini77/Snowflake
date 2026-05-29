@@ -1,8 +1,8 @@
 # Cascade Financial Analyst Agent Specification
 # Agent: CASCADE_FINANCIAL_ANALYST
-# Database: SANDEEP_MAINI_COGNIZANT_COM_DB
+# Database: <YOUR_DATABASE>
 # Schema: CASCADE_DEMO
-# Owner: SANDEEP_MAINI_COGNIZANT_COM_ROLE
+# Owner: <YOUR_ROLE>
 
 models:
   orchestration: claude-4-sonnet
@@ -42,4 +42,4 @@ tools:
 
 tool_resources:
   Analyst:
-    semantic_view: SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.FINANCIAL_ANALYTICS
+    semantic_view: ${SNOWFLAKE_DATABASE}.CASCADE_DEMO.FINANCIAL_ANALYTICS

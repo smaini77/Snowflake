@@ -7,7 +7,7 @@ AI-powered client profitability analyst for Cascade Wealth Management.
 | Property | Value |
 |----------|-------|
 | **Agent** | `CASCADE_FINANCIAL_ANALYST` |
-| **Database** | `SANDEEP_MAINI_COGNIZANT_COM_DB` |
+| **Database** | `<YOUR_DATABASE>` |
 | **Schema** | `CASCADE_DEMO` |
 | **Model** | `claude-4-sonnet` |
 | **Tools** | Cortex Analyst (text-to-sql), Visualizer |
@@ -31,7 +31,7 @@ Helps Cascade Wealth Management executives ($500M AUM RIA, retirement-focused) u
 ### Prerequisites
 
 - Snowflake account with Cortex AI enabled
-- Role: `SANDEEP_MAINI_COGNIZANT_COM_ROLE`
+- Role: `<YOUR_ROLE>`
 - Warehouse: `DEMO_WH`
 - Required objects:
   - Semantic View: `CASCADE_DEMO.FINANCIAL_ANALYTICS`
@@ -56,11 +56,11 @@ pip install -r requirements.txt
 
 ```bash
 # Describe the agent
-cortex agents describe SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.CASCADE_FINANCIAL_ANALYST
+cortex agents describe <YOUR_DATABASE>.CASCADE_DEMO.CASCADE_FINANCIAL_ANALYST
 
 # Query via semantic view
 cortex analyst query "Which clients are most profitable?" \
-  --view=SANDEEP_MAINI_COGNIZANT_COM_DB.CASCADE_DEMO.FINANCIAL_ANALYTICS
+  --view=<YOUR_DATABASE>.CASCADE_DEMO.FINANCIAL_ANALYTICS
 ```
 
 ### Sample Questions

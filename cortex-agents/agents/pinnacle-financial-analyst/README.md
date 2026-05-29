@@ -7,7 +7,7 @@ AI-powered financial analytics agent for Pinnacle Financial Services executives.
 | Property | Value |
 |----------|-------|
 | **Agent** | `PINNACLE_FINANCIAL_ANALYST` |
-| **Database** | `SANDEEP_MAINI_COGNIZANT_COM_DB` |
+| **Database** | `<YOUR_DATABASE>` |
 | **Schema** | `ANALYTICS` |
 | **Model** | `auto` |
 | **Tools** | Cortex Analyst (text-to-sql), Data Visualizer |
@@ -30,7 +30,7 @@ Helps Pinnacle Financial Services executives ($2B AUM asset management firm) und
 ### Prerequisites
 
 - Snowflake account with Cortex AI enabled
-- Role: `SANDEEP_MAINI_COGNIZANT_COM_ROLE`
+- Role: `<YOUR_ROLE>`
 - Warehouse: `DEMO_WH` (or any available warehouse)
 - Required objects:
   - Semantic View: `ANALYTICS.FINANCIAL_ANALYTICS`
@@ -55,18 +55,18 @@ pip install -r requirements.txt
 
 ```bash
 # Describe the agent
-cortex agents describe SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.PINNACLE_FINANCIAL_ANALYST
+cortex agents describe <YOUR_DATABASE>.ANALYTICS.PINNACLE_FINANCIAL_ANALYST
 
 # Query the agent (interactive)
 cortex analyst query "What was our total revenue last quarter?" \
-  --view=SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.FINANCIAL_ANALYTICS
+  --view=<YOUR_DATABASE>.ANALYTICS.FINANCIAL_ANALYTICS
 ```
 
 ### Via Snowflake SQL
 
 ```sql
 -- Describe the agent
-DESCRIBE AGENT SANDEEP_MAINI_COGNIZANT_COM_DB.ANALYTICS.PINNACLE_FINANCIAL_ANALYST;
+DESCRIBE AGENT <YOUR_DATABASE>.ANALYTICS.PINNACLE_FINANCIAL_ANALYST;
 
 -- List versions
 SELECT * FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()));
